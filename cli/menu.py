@@ -8,7 +8,7 @@ logger = get_logger(__name__)
 
 class App:
     """
-    CLI-приложение
+    CLI-приложение для управления паролями.
     """
 
     COMMANDS = {
@@ -21,11 +21,26 @@ class App:
     }
 
     def __init__(self) -> None:
+        """
+        Инициализирует CLI-приложение.
+
+        :ivar columns: Заголовки таблицы для отображения данных.
+        :vartype columns: tuple[str, str, str]
+        :ivar running: Флаг работы приложения.
+        :vartype running: bool
+        :ivar manager: Менеджер паролей.
+        :vartype manager: PasswordManager
+        """
         self.columns = ("Site", "Username", "Password")
         self.running = True
         self.manager = PasswordManager()
 
     def run(self) -> None:
+        """
+        Запускает главный цикл CLI.
+
+        :raises Exception: При возникновении непредвиденной ошибки во время выполнения.
+        """
         print("Введите 'help' для списка команд.")
         while self.running:
             try:
@@ -40,13 +55,13 @@ class App:
                     case "exit":
                         self.exit()
                     case "add":
-                        self._add()
+                        self._add(cmd)
                     case "list":
                         self._list()
                     case "find":
-                        self._find()
+                        self._find(cmd)
                     case "delete":
-                        self._remove()
+                        self._remove(cmd)
                     case _:
                         print(f'"{command}" такой команды нет')
                         logger.warning("Неизвестная команда: %s", command)
@@ -55,19 +70,37 @@ class App:
                 print("Неожиданная ошибка:", e)
                 logger.exception("Неожиданная ошибка в run: %s", e)
 
-    def _add(self) -> None:
+    def _add(self, cmd: list[str] | None = None) -> None:
+        """
+        Добавляет новый пароль.
+
+        Может вызываться двумя способами:
+            - С аргументами: ``add <site> <username> <password>``
+            - Через интерактивный ввод (input)
+
+        :param cmd: Аргументы команды (опционально)
+        :type cmd: list[str] | None
+        :raises EmptyInputError: Если одно из полей пустое.
+        """
         try:
-            site = input("Введите сайт: ").strip()
-            username = input("Введите логин: ").strip()
-            password = input("Введите пароль: ").strip()
+            if cmd and len(cmd) == 4:
+                _, site, username, password = cmd
+            else:
+                site = input("Введите сайт: ").strip()
+                username = input("Введите логин: ").strip()
+                password = input("Введите пароль: ").strip()
+
             self.manager.add_password(site, username, password)
+            print(f"Пароль для {site} добавлен")
         except EmptyInputError as e:
             print(f"{e}")
             logger.warning("Ошибка при добавлении пароля: %s", e)
 
     def _list(self) -> None:
         """
-        Выводит все пароли в виде таблицы.
+        Выводит все сохранённые пароли в виде таблицы.
+
+        Если паролей нет, выводит сообщение об отсутствии данных.
         """
         data = self.manager.list_passwords()  # словарь {site: {username, password}}
 
@@ -79,8 +112,23 @@ class App:
         ]
         print(tabulate(table, headers=self.columns, tablefmt="grid"))
 
-    def _find(self) -> None:
-        site = input("Введите сайт: ").strip()
+    def _find(self, cmd: list[str] | None = None) -> None:
+        """
+        Ищет пароль по названию сайта.
+
+        Может вызываться двумя способами:
+            - С аргументом: ``find <site>``
+            - Через интерактивный ввод
+
+        :param cmd: Аргументы команды (опционально)
+        :type cmd: list[str] | None
+        :raises PasswordNotFoundError: Если сайт не найден.
+        """
+        if cmd and len(cmd) == 2:
+            _, site = cmd
+        else:
+            site = input("Введите сайт: ").strip()
+
         try:
             record = self.manager.find_password(site)
             table = [record]
@@ -89,8 +137,23 @@ class App:
             print(f"{e}")
             logger.warning("Ошибка поиска пароля: %s", e)
 
-    def _remove(self) -> None:
-        site = input("Введите сайт: ").strip()
+    def _remove(self, cmd: list[str] | None = None) -> None:
+        """
+        Удаляет сохранённый пароль по названию сайта.
+
+        Может вызываться двумя способами:
+            - С аргументом: ``delete <site>``
+            - Через интерактивный ввод
+
+        :param cmd: Аргументы команды (опционально)
+        :type cmd: list[str] | None
+        :raises PasswordNotFoundError: Если сайт не найден.
+        """
+        if cmd and len(cmd) == 2:
+            _, site = cmd
+        else:
+            site = input("Введите сайт: ").strip()
+
         try:
             self.manager.remove_password(site)
         except PasswordNotFoundError as e:
@@ -98,7 +161,9 @@ class App:
             logger.warning("Ошибка удаления пароля: %s", e)
 
     def help(self) -> None:
-        """Вывод списка команд"""
+        """
+        Выводит список доступных команд CLI.
+        """
         print("\nДоступные команды:")
         for cmd, desc in self.COMMANDS.items():
             print(f"  {cmd:<6} - {desc}")
