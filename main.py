@@ -1,4 +1,5 @@
 from cli.menu import App
+from core.auth import AuthManager
 
 
 def main() -> None:
@@ -10,6 +11,10 @@ def main() -> None:
 
     :return: None
     """
+    auth = AuthManager()
+    if not auth.authenticate():
+        print("Доступ запрещён. Завершение работы.")
+        return
     app = App()
     app.run()
 
