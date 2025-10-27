@@ -1,6 +1,6 @@
 import pytest
 
-from cli import App
+from cli.menu import App
 
 
 def test_print_help(capsys: pytest.CaptureFixture[str]) -> None:
