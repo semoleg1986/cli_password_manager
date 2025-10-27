@@ -1,28 +1,10 @@
-import hashlib
 from pathlib import Path
 from typing import Tuple
 
-from constants import PASSWORDS_FILE
+from core.constants import PASSWORDS_FILE
+from core.encrypter import hash_password
+from core.exception import EmptyInputError, PasswordNotFoundError
 from utils.storage import load_data, save_data
-
-
-class EmptyInputError(Exception):
-    """Пустой ввод"""
-
-
-class PasswordNotFoundError(Exception):
-    """Пароль для указанного сайта не найден."""
-
-
-def hash_password(password: str) -> str:
-    """
-    Хеширование пароля метод SHA256
-    :param password: Исходный пароль
-    :type password: str
-    :return: Хеш пароля
-    :rtype: str
-    """
-    return hashlib.sha256(password.encode("utf-8")).hexdigest()
 
 
 class PasswordManager:

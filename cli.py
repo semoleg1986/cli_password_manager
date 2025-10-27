@@ -1,4 +1,4 @@
-from manager import EmptyInputError, PasswordManager, PasswordNotFoundError
+from core.manager import EmptyInputError, PasswordManager, PasswordNotFoundError
 
 
 class App:
