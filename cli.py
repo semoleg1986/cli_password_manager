@@ -34,6 +34,8 @@ class App:
                         self.exit()
                     case "add":
                         self._add()
+                    case "find":
+                        self._find()
                     case "delete":
                         self._remove()
                     case _:
@@ -49,6 +51,13 @@ class App:
             password = input("Введите пароль: ").strip()
             self.manager.add_password(site, username, password)
         except EmptyInputError as e:
+            print(f"{e}")
+
+    def _find(self) -> None:
+        site = input("Введите сайт: ").strip()
+        try:
+            print(self.manager.find_password(site))
+        except PasswordNotFoundError as e:
             print(f"{e}")
 
     def _remove(self) -> None:

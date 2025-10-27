@@ -1,5 +1,6 @@
 import hashlib
 from pathlib import Path
+from typing import Tuple
 
 from constants import PASSWORDS_FILE
 from utils.storage import load_data, save_data
@@ -35,6 +36,12 @@ class PasswordManager:
 
         self.data[site] = {"username": username, "password": hash_password(password)}
         save_data(self.storage_path, self.data)
+
+    def find_password(self, site: str) -> Tuple[str, str, str]:
+        if site not in self.data:
+            raise PasswordNotFoundError(f"Caйт {site} не найден.")
+        record = self.data[site]
+        return site, record["username"], record["password"]
 
     def remove_password(self, site: str):
         if site not in self.data:
