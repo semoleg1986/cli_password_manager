@@ -1,7 +1,11 @@
 from tabulate import tabulate
 
-from core.manager import EmptyInputError, PasswordManager, PasswordNotFoundError
-from utils.logger import get_logger
+from cli_password_manager.core.manager import (
+    EmptyInputError,
+    PasswordManager,
+    PasswordNotFoundError,
+)
+from cli_password_manager.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

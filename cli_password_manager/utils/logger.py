@@ -1,7 +1,7 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-from core.constants import LOG_FILE, LOGS_DIR
+from cli_password_manager.core.constants import LOG_FILE, LOGS_DIR
 
 LOGS_DIR.mkdir(parents=True, exist_ok=True)
 

@@ -2,7 +2,7 @@ import hashlib
 from getpass import getpass
 from pathlib import Path
 
-from core.constants import MASTER_KEY
+from cli_password_manager.core.constants import MASTER_KEY
 
 MASTER_FILE = Path(MASTER_KEY)
 

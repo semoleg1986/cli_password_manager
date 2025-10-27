@@ -1,6 +1,6 @@
 import pytest
 
-from cli.menu import App
+from cli_password_manager.cli.menu import App
 
 
 def test_print_help(capsys: pytest.CaptureFixture[str]) -> None:

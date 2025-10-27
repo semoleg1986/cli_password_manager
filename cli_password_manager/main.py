@@ -1,5 +1,5 @@
-from cli_password_manager.cli import App
-from cli_password_manager.core import AuthManager
+from cli_password_manager.cli.menu import App
+from cli_password_manager.core.auth import AuthManager
 
 
 def main() -> None:

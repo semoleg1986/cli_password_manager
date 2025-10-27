@@ -19,8 +19,8 @@ build/
 .copy.env
 
 # Data with Secrets
-data/
-logs/
+cli_password_manager/data/
+cli_password_manager/logs/
 
 
 

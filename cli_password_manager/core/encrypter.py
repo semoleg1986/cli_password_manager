@@ -4,7 +4,7 @@ from pathlib import Path
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 
-from core.constants import KEY_FILE as KEY_FILE_PATH
+from cli_password_manager.core.constants import KEY_FILE as KEY_FILE_PATH
 
 load_dotenv()
 

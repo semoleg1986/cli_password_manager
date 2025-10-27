@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import Dict, Tuple
 
-from core.constants import PASSWORDS_FILE
-from core.encrypter import decrypt_password, encrypt_password
-from core.exception import EmptyInputError, PasswordNotFoundError
-from utils.logger import get_logger
-from utils.storage import load_data, save_data
+from cli_password_manager.core.constants import PASSWORDS_FILE
+from cli_password_manager.core.encrypter import decrypt_password, encrypt_password
+from cli_password_manager.core.exception import EmptyInputError, PasswordNotFoundError
+from cli_password_manager.utils.logger import get_logger
+from cli_password_manager.utils.storage import load_data, save_data
 
 logger = get_logger(__name__)
 
