@@ -1,4 +1,4 @@
-from manager import EmptyInputError, PasswordManager
+from manager import EmptyInputError, PasswordManager, PasswordNotFoundError
 
 
 class App:
@@ -34,6 +34,8 @@ class App:
                         self.exit()
                     case "add":
                         self._add()
+                    case "delete":
+                        self._remove()
                     case _:
                         print(f'"{command}" такой команды нет')
 
@@ -47,6 +49,13 @@ class App:
             password = input("Введите пароль: ").strip()
             self.manager.add_password(site, username, password)
         except EmptyInputError as e:
+            print(f"{e}")
+
+    def _remove(self) -> None:
+        site = input("Введите сайт: ").strip()
+        try:
+            self.manager.remove_password(site)
+        except PasswordNotFoundError as e:
             print(f"{e}")
 
     def help(self) -> None:

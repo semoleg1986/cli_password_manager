@@ -9,6 +9,10 @@ class EmptyInputError(Exception):
     """Пустой ввод"""
 
 
+class PasswordNotFoundError(Exception):
+    """Пароль для указанного сайта не найден."""
+
+
 def hash_password(password: str) -> str:
     """
     Хеширование пароля метод SHA256
@@ -30,4 +34,10 @@ class PasswordManager:
             raise EmptyInputError("Все поля должны быть заполнены")
 
         self.data[site] = {"username": username, "password": hash_password(password)}
+        save_data(self.storage_path, self.data)
+
+    def remove_password(self, site: str):
+        if site not in self.data:
+            raise PasswordNotFoundError(f"Caйт {site} не найден.")
+        del self.data[site]
         save_data(self.storage_path, self.data)
