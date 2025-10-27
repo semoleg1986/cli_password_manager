@@ -1,4 +1,7 @@
 from core.manager import EmptyInputError, PasswordManager, PasswordNotFoundError
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 class App:
@@ -40,9 +43,11 @@ class App:
                         self._remove()
                     case _:
                         print(f'"{command}" такой команды нет')
+                        logger.warning("Неизвестная команда: %s", command)
 
             except Exception as e:
                 print("Неожиданная ошибка:", e)
+                logger.exception("Неожиданная ошибка в run: %s", e)
 
     def _add(self) -> None:
         try:
@@ -52,6 +57,7 @@ class App:
             self.manager.add_password(site, username, password)
         except EmptyInputError as e:
             print(f"{e}")
+            logger.warning("Ошибка при добавлении пароля: %s", e)
 
     def _find(self) -> None:
         site = input("Введите сайт: ").strip()
@@ -59,6 +65,7 @@ class App:
             print(self.manager.find_password(site))
         except PasswordNotFoundError as e:
             print(f"{e}")
+            logger.warning("Ошибка поиска пароля: %s", e)
 
     def _remove(self) -> None:
         site = input("Введите сайт: ").strip()
@@ -66,6 +73,7 @@ class App:
             self.manager.remove_password(site)
         except PasswordNotFoundError as e:
             print(f"{e}")
+            logger.warning("Ошибка удаления пароля: %s", e)
 
     def help(self) -> None:
         """Вывод списка команд"""
@@ -73,10 +81,12 @@ class App:
         for cmd, desc in self.COMMANDS.items():
             print(f"  {cmd:<6} - {desc}")
         print()
+        logger.info("Выведена справка по командам")
 
     def exit(self) -> None:
         """
         Завершение программы
         """
         print("Программа завершена")
+        logger.info("CLI-приложение завершено")
         self.running = False

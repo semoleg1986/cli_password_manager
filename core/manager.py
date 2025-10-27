@@ -4,7 +4,10 @@ from typing import Tuple
 from core.constants import PASSWORDS_FILE
 from core.encrypter import hash_password
 from core.exception import EmptyInputError, PasswordNotFoundError
+from utils.logger import get_logger
 from utils.storage import load_data, save_data
+
+logger = get_logger(__name__)
 
 
 class PasswordManager:
@@ -18,6 +21,7 @@ class PasswordManager:
     def __init__(self, storage_path: Path = PASSWORDS_FILE):
         self.storage_path = storage_path
         self.data = load_data(storage_path)
+        logger.info("Менеджер паролей инициализирован, файл: %s", storage_path)
 
     def add_password(self, site: str, username: str, password: str) -> None:
         """
@@ -32,6 +36,7 @@ class PasswordManager:
         :raises EmptyInputError: Если любое из полей пустое
         """
         if not all([site, username, password]):
+            logger.warning("Попытка добавить пароль с пустыми полями")
             raise EmptyInputError("Все поля должны быть заполнены")
 
         self.data[site] = {"username": username, "password": hash_password(password)}
@@ -50,7 +55,9 @@ class PasswordManager:
         try:
             record = self.data[site]
         except KeyError:
+            logger.warning("Попытка поиска пароля для несуществующего сайта '%s'", site)
             raise PasswordNotFoundError(f"Сайт {site} не найден.")
+        logger.info("Пароль для сайта '%s' успешно найден", site)
         return site, record["username"], record["password"]
 
     def remove_password(self, site: str) -> None:
@@ -64,5 +71,7 @@ class PasswordManager:
         try:
             self.data.pop(site)
         except KeyError:
+            logger.warning("Попытка удаления несуществующего сайта '%s'", site)
             raise PasswordNotFoundError(f"Сайт {site} не найден.")
         save_data(self.storage_path, self.data)
+        logger.info("Пароль для сайта '%s' удалён", site)
