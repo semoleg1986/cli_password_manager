@@ -17,3 +17,10 @@ build/
 .DS_Store
 .env
 .copy.env
+
+# Data with Secrets
+cli_password_manager/data/
+cli_password_manager/logs/
+
+
+
