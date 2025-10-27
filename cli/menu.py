@@ -1,3 +1,5 @@
+from tabulate import tabulate
+
 from core.manager import EmptyInputError, PasswordManager, PasswordNotFoundError
 from utils.logger import get_logger
 
@@ -19,6 +21,7 @@ class App:
     }
 
     def __init__(self) -> None:
+        self.columns = ("Site", "Username", "Password")
         self.running = True
         self.manager = PasswordManager()
 
@@ -63,12 +66,25 @@ class App:
             logger.warning("Ошибка при добавлении пароля: %s", e)
 
     def _list(self) -> None:
-        print(self.manager.list_passwords())
+        """
+        Выводит все пароли в виде таблицы.
+        """
+        data = self.manager.list_passwords()  # словарь {site: {username, password}}
+
+        if not data:
+            print("Паролей пока нет.")
+            return
+        table = [
+            (site, info["username"], info["password"]) for site, info in data.items()
+        ]
+        print(tabulate(table, headers=self.columns, tablefmt="grid"))
 
     def _find(self) -> None:
         site = input("Введите сайт: ").strip()
         try:
-            print(self.manager.find_password(site))
+            record = self.manager.find_password(site)
+            table = [record]
+            print(tabulate(table, headers=self.columns, tablefmt="grid"))
         except PasswordNotFoundError as e:
             print(f"{e}")
             logger.warning("Ошибка поиска пароля: %s", e)
