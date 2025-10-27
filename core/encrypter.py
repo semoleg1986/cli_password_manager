@@ -1,12 +1,46 @@
-import hashlib
+import os
+from pathlib import Path
+
+from cryptography.fernet import Fernet
+from dotenv import load_dotenv
+
+from core.constants import KEY_FILE as KEY_FILE_PATH
+
+load_dotenv()
+
+key_file_path = Path(KEY_FILE_PATH)
+env_key = os.getenv("PASSWORD_MANAGER_KEY")
+
+if env_key:
+    KEY = env_key.encode()
+elif key_file_path.exists():
+    KEY = key_file_path.read_bytes()
+else:
+    KEY = Fernet.generate_key()
+    key_file_path.write_bytes(KEY)
+
+f = Fernet(KEY)
 
 
-def hash_password(password: str) -> str:
+def encrypt_password(password: str) -> str:
     """
-    Хеширование пароля метод SHA256
-    :param password: Исходный пароль
+    Шифрует пароль с использованием Fernet.
+
+    :param password: Пароль для шифрования.
     :type password: str
-    :return: Хеш пароля
+    :return: Зашифрованный пароль в виде строки.
     :rtype: str
     """
-    return hashlib.sha256(password.encode("utf-8")).hexdigest()
+    return f.encrypt(password.encode("utf-8")).decode("utf-8")
+
+
+def decrypt_password(encrypted_password: str) -> str:
+    """
+    Расшифровывает пароль, зашифрованный с помощью Fernet.
+
+    :param encrypted_password: Зашифрованный пароль.
+    :type encrypted_password: str
+    :return: Исходный пароль в виде строки.
+    :rtype: str
+    """
+    return f.decrypt(encrypted_password.encode("utf-8")).decode("utf-8")

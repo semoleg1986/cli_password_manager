@@ -6,10 +6,14 @@
 #
 black==25.9.0
     # via -r requirements.in
+cffi==2.0.0
+    # via cryptography
 cfgv==3.4.0
     # via pre-commit
 click==8.3.0
     # via black
+cryptography==46.0.3
+    # via -r requirements.in
 distlib==0.4.0
     # via virtualenv
 filelock==3.20.0
@@ -50,11 +54,15 @@ pre-commit==4.3.0
     # via -r requirements.in
 pycodestyle==2.14.0
     # via flake8
+pycparser==2.23
+    # via cffi
 pyflakes==3.4.0
     # via flake8
 pygments==2.19.2
     # via pytest
 pytest==8.4.2
+    # via -r requirements.in
+python-dotenv==1.2.1
     # via -r requirements.in
 pytokens==0.2.0
     # via black

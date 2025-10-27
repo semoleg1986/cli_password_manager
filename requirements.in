@@ -9,3 +9,7 @@ pre-commit
 
 tabulate
 types-tabulate
+
+python-dotenv
+
+cryptography
