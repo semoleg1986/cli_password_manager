@@ -17,3 +17,7 @@ build/
 .DS_Store
 .env
 .copy.env
+
+# Data with Secrets
+data/
+
