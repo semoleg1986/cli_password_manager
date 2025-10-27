@@ -38,9 +38,10 @@ class PasswordManager:
         save_data(self.storage_path, self.data)
 
     def find_password(self, site: str) -> Tuple[str, str, str]:
-        if site not in self.data:
-            raise PasswordNotFoundError(f"Caйт {site} не найден.")
-        record = self.data[site]
+        try:
+            record = self.data[site]
+        except KeyError:
+            raise PasswordNotFoundError(f"Сайт {site} не найден.")
         return site, record["username"], record["password"]
 
     def remove_password(self, site: str) -> None:
