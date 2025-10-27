@@ -26,6 +26,16 @@ def save_data(path: Path, data: Dict[str, Any]) -> None:
 def load_data(path: Path) -> Dict[str, Any]:
     """
     Загружает данные из JSON-файла.
+
+    Если файл не существует, создаётся пустой JSON-файл.
+    Возвращает словарь, считанный из файла.
+
+    :param path: Путь к JSON-файлу для чтения.
+    :type path: Path
+    :return: Словарь с данными из файла.
+    :rtype: Dict[str, Any]
+    :raises json.JSONDecodeError: Если файл содержит некорректный JSON.
+    :raises OSError: Если произошла ошибка чтения или создания файла.
     """
     if not path.exists():
         try:
