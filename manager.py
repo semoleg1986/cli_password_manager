@@ -43,8 +43,9 @@ class PasswordManager:
         record = self.data[site]
         return site, record["username"], record["password"]
 
-    def remove_password(self, site: str):
-        if site not in self.data:
-            raise PasswordNotFoundError(f"Caйт {site} не найден.")
-        del self.data[site]
+    def remove_password(self, site: str) -> None:
+        try:
+            self.data.pop(site)
+        except KeyError:
+            raise PasswordNotFoundError(f"Сайт {site} не найден.")
         save_data(self.storage_path, self.data)
