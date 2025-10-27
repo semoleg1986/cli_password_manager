@@ -1,3 +1,6 @@
+from manager import EmptyInputError, PasswordManager
+
+
 class App:
     """
     CLI-приложение
@@ -13,6 +16,7 @@ class App:
 
     def __init__(self) -> None:
         self.running = True
+        self.manager = PasswordManager()
 
     def run(self) -> None:
         print("Введите 'help' для списка команд.")
@@ -28,11 +32,22 @@ class App:
                         self.help()
                     case "exit":
                         self.exit()
+                    case "add":
+                        self._add()
                     case _:
                         print(f'"{command}" такой команды нет')
 
             except Exception as e:
                 print("Неожиданная ошибка:", e)
+
+    def _add(self) -> None:
+        try:
+            site = input("Введите сайт: ").strip()
+            username = input("Введите логин: ").strip()
+            password = input("Введите пароль: ").strip()
+            self.manager.add_password(site, username, password)
+        except EmptyInputError as e:
+            print(f"{e}")
 
     def help(self) -> None:
         """Вывод списка команд"""
