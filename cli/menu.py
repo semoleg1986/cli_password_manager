@@ -10,9 +10,10 @@ class App:
     """
 
     COMMANDS = {
-        "add": "Добавить пароль",
-        "find": "Найти пароль",
-        "delete": "Удалить пароль",
+        "add": "добавить пароль",
+        "find": "найти пароль",
+        "delete": "удалить пароль",
+        "list": "вывод всех паролей",
         "help": "показать список команд",
         "exit": "выйти из программы",
     }
@@ -37,6 +38,8 @@ class App:
                         self.exit()
                     case "add":
                         self._add()
+                    case "list":
+                        self._list()
                     case "find":
                         self._find()
                     case "delete":
@@ -58,6 +61,9 @@ class App:
         except EmptyInputError as e:
             print(f"{e}")
             logger.warning("Ошибка при добавлении пароля: %s", e)
+
+    def _list(self) -> None:
+        print(self.manager.list_passwords())
 
     def _find(self) -> None:
         site = input("Введите сайт: ").strip()

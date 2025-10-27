@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Tuple
+from typing import Dict, Tuple
 
 from core.constants import PASSWORDS_FILE
 from core.encrypter import hash_password
@@ -41,6 +41,15 @@ class PasswordManager:
 
         self.data[site] = {"username": username, "password": hash_password(password)}
         save_data(self.storage_path, self.data)
+
+    def list_passwords(self) -> Dict[str, Dict[str, str]]:
+        """
+        Возвращает словарь всех сохранённых паролей.
+
+        :return: Словарь вида {site: {"username": username, "password": password}}
+        """
+        logger.info("Вывод всех сохранённых паролей")
+        return self.data
 
     def find_password(self, site: str) -> Tuple[str, str, str]:
         """
